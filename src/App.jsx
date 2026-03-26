@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 const DEFAULT_CHANNEL_URL = "https://www.youtube.com/@ChannelMakers";
 
@@ -338,7 +338,7 @@ function App() {
   const [channelInput, setChannelInput] = useState(DEFAULT_CHANNEL_URL);
   const [channel, setChannel] = useState(MOCK_CHANNEL);
   const [videos, setVideos] = useState(decorateVideos(MOCK_VIDEOS));
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState("mock");
   const [query, setQuery] = useState("");
   const [sortBy, setSortBy] = useState("impact");
   const [minimumViews, setMinimumViews] = useState("0");
@@ -374,10 +374,6 @@ function App() {
     };
   }, [videos]);
 
-  useEffect(() => {
-    void handleAnalyze(DEFAULT_CHANNEL_URL, true);
-  }, []);
-
   async function handleAnalyze(value = channelInput, silent = false) {
     const parsed = parseChannelInput(value);
 
@@ -401,8 +397,10 @@ function App() {
       setChannel(MOCK_CHANNEL);
       setVideos(decorateVideos(MOCK_VIDEOS));
       setError(
-        nextError.message ||
-          "Something went wrong while fetching data. Falling back to demo data.",
+        silent
+          ? ""
+          : nextError.message ||
+              "Live data is unavailable right now. Showing polished demo data instead.",
       );
     } finally {
       if (!silent) {
